@@ -1,4 +1,3 @@
-# game_pkg/splash_screen.py
 import tkinter as tk
 import tkinter.font as tkfont
 import os
@@ -26,10 +25,8 @@ class SplashScreen:
         
         for widget in self.root.winfo_children(): widget.destroy()
 
-        # --- FIX: UPDATED FILENAME TO 'razzie_icon.jpg' ---
         try:
             base_dir = os.path.dirname(os.path.dirname(__file__)) 
-            # Changed from logo_bingo.jpg to razzie_icon.jpg to match your file
             icon_path = os.path.join(base_dir, "assets", "razzie_icon.jpg")
             
             if os.path.exists(icon_path):
@@ -40,7 +37,6 @@ class SplashScreen:
                 print(f"[WARNING] Splash icon missing at: {icon_path}")
         except Exception as e:
             print(f"[ERROR] Could not load splash icon: {e}")
-        # ------------------------------
 
         self.loading_phrases = itertools.cycle([
             "Entering Casino Floor...", "Polishing Bingo Balls...",
@@ -67,24 +63,20 @@ class SplashScreen:
         self.canvas = tk.Canvas(self.root, width=600, height=650, bg=COLOR_BG, highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
 
-        # Border
         self.canvas.create_rectangle(10, 10, 590, 640, outline=COLOR_GOLD, width=4)
         self.canvas.create_rectangle(15, 15, 585, 635, outline="#b45309", width=2)
 
-        # Suits
         font_suits = ("Times New Roman", 32)
         self.canvas.create_text(50, 60, text="♠", fill=COLOR_GOLD, font=font_suits)
         self.canvas.create_text(550, 60, text="♥", fill=COLOR_GOLD, font=font_suits)
         self.canvas.create_text(50, 600, text="♣", fill=COLOR_GOLD, font=font_suits)
         self.canvas.create_text(550, 600, text="♦", fill=COLOR_GOLD, font=font_suits)
 
-        # Text
         self.canvas.create_text(304, 204, text="BINGO", font=("Impact", 72), fill="black")
         self.canvas.create_text(300, 200, text="BINGO", font=("Impact", 72), fill=COLOR_GOLD)
         self.canvas.create_text(300, 280, text="MASTER", font=("Times New Roman", 36, "bold"), fill="white")
         self.canvas.create_text(300, 320, text="The Jackpot Edition", font=("Times New Roman", 16, "italic"), fill="#fbbf24")
 
-        # Loading Bar
         bar_x, bar_y = 100, 450
         self.canvas.create_rectangle(bar_x, bar_y, bar_x + 400, bar_y + 30, fill=COLOR_BAR_BG, outline=COLOR_GOLD, width=2)
         self.bar_fill = self.canvas.create_rectangle(bar_x+2, bar_y+2, bar_x+2, bar_y+28, fill=COLOR_GOLD, outline="")

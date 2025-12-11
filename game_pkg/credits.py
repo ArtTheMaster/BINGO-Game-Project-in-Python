@@ -1,10 +1,8 @@
-# game_pkg/credits.py
 import tkinter as tk
 from tkinter import font as tkfont
 import random
 import string
 
-# --- CASINO PALETTE ---
 COLOR_BG = "#0f172a"
 COLOR_GOLD = "#fbbf24"
 COLOR_WHITE = "#f1f5f9"
@@ -18,7 +16,7 @@ class CreditsScreen:
         self.root.title("Bingo Master: Credits")
         self.root.configure(bg=COLOR_BG)
         
-        self.is_running = True # Flag to control animation loop
+        self.is_running = True 
 
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -38,20 +36,17 @@ class CreditsScreen:
         self.create_confetti()
         self.animate_confetti()
 
-        # Back Button with Clean Exit
         btn_back = tk.Button(self.root, text="⬅ MAIN MENU", font=("Arial", 12, "bold"),
                              bg="#334155", fg="white", activebackground=COLOR_GOLD, activeforeground="black",
                              relief=tk.RAISED, bd=3, cursor="hand2",
                              command=self.go_back)
         btn_back.place(x=40, y=40)
 
-        # Start Sequence
         self.root.after(500, lambda: self.show_section(200, "DEVELOPED BY", "ART LORENCE H. VERIDIANO", COLOR_GOLD))
         self.root.after(3500, lambda: self.show_section(450, "COURSE & YEAR", "BSCS-DS-2A", COLOR_WHITE))
         self.root.after(6000, lambda: self.show_section(650, "PROJECT DATE", "DECEMBER 2025", COLOR_RED))
 
     def go_back(self):
-        """Stops animations and returns to menu."""
         self.is_running = False
         self.return_callback()
 
@@ -66,14 +61,13 @@ class CreditsScreen:
             self.confetti.append([item, speed])
 
     def animate_confetti(self):
-        if not self.is_running: return # Stop if left screen
+        if not self.is_running: return 
 
         for particle in self.confetti:
             item, speed = particle
             self.canvas.move(item, 0, speed)
             coords = self.canvas.coords(item)
             
-            # Check if out of bounds (safe check)
             if coords:
                 if coords[1] > self.root.winfo_height():
                     new_x = random.randint(0, self.root.winfo_width())

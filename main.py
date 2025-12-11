@@ -4,7 +4,6 @@ import tkinter as tk
 import os
 import sys
 
-# This to ensure Python can find the game_pkg folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 try:

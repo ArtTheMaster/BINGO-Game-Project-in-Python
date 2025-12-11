@@ -1,12 +1,9 @@
-# game_pkg/menu.py
 import tkinter as tk
 from tkinter import font as tkfont
 from PIL import Image, ImageTk
 import os
 import pygame
 
-# --- IMPORTS ---
-# We use relative imports (indicated by the dot .)
 try:
     from .game_ui import BingoGameApp, P1_HIGHLIGHT, P2_HIGHLIGHT
     from .bingo_bomb import BingoBombApp
@@ -14,10 +11,8 @@ try:
     from .exit_credits import ExitCredits 
     from .notifications import ask_casino_confirm, show_casino_alert 
 except ImportError:
-    # Fallback prevents crash if run individually (though you should run main.py)
     pass
 
-# --- CASINO PALETTE ---
 COLOR_BG = "#0f172a"
 COLOR_GOLD = "#FFD700"
 COLOR_RED_EXIT = "#be123c"
@@ -31,12 +26,10 @@ class MainMenu:
         self.root.configure(bg=COLOR_BG)
         self.root.resizable(False, False)
         
-        # Fonts
         self.title_font = tkfont.Font(family="Times New Roman", size=48, weight="bold")
         self.button_font = tkfont.Font(family="Times New Roman", size=18, weight="bold")
         self.sub_font = tkfont.Font(family="Times New Roman", size=14, slant="italic")
 
-        # Audio Setup
         self.snd_click = None
         self.menu_bgm_path = None
         self.setup_audio()
@@ -49,8 +42,7 @@ class MainMenu:
     def setup_audio(self):
         try:
             pygame.mixer.init()
-            # Robust path finding for assets
-            base_dir = os.path.dirname(os.path.dirname(__file__)) # Go up one level from game_pkg
+            base_dir = os.path.dirname(os.path.dirname(__file__)) 
             assets_dir = os.path.join(base_dir, "assets")
             
             click_path = os.path.join(assets_dir, "mixkit_gameclick.wav")
@@ -88,10 +80,7 @@ class MainMenu:
     def clear_screen(self):
         for widget in self.root.winfo_children(): widget.destroy()
 
-    # --- ACTION HANDLERS ---
-
     def confirm_and_exit(self):
-        """Uses the custom notification to ask for exit."""
         should_exit = ask_casino_confirm(self.root, 
                                          title="CASHING OUT?", 
                                          message="Are you sure you want to leave the Casino Floor?")
@@ -102,8 +91,6 @@ class MainMenu:
         self.stop_bgm()
         self.root.geometry("600x700")
         ExitCredits(self.root)
-
-    # --- SCREENS ---
 
     def show_main_screen(self):
         self.clear_screen()
@@ -183,7 +170,6 @@ class MainMenu:
         p2 = "CPU-Bot"
         is_human_p2 = False
         
-        # --- NEW NOTIFICATION USAGE ---
         try:
             if not p1: 
                 show_casino_alert(self.root, "PIT BOSS ERROR", "Player 1 name is required!")

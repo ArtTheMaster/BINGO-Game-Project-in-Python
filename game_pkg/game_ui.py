@@ -1,4 +1,3 @@
-# game_pkg/game_ui.py
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -8,10 +7,8 @@ import tkinter.font as tkfont
 import os
 from .player import Player, ComputerPlayer
 from .utils import log_transaction
-# --- NEW IMPORT ---
 from .notifications import ask_casino_confirm, show_casino_alert
 
-# --- 🎰 CASINO ROYAL PALETTE ---
 COLOR_BG = "#0f172a"         
 COLOR_PANEL = "#1e293b"      
 COLOR_TEXT_MAIN = "#f1f5f9"  
@@ -39,14 +36,12 @@ class BingoGameApp:
         self.p2_name = p2_name
         self.is_p2_human = is_p2_human
 
-        # Fonts
         self.font_header = tkfont.Font(family="Impact", size=18)
         self.font_ball_main = tkfont.Font(family="Arial Black", size=65, weight="bold")
         self.font_ball_sub = tkfont.Font(family="Arial Narrow", size=16, weight="bold")
         self.font_tile = tkfont.Font(family="Verdana", size=13, weight="bold")
         self.font_log = tkfont.Font(family="Consolas", size=10)
 
-        # Icon
         try:
             icon_path = os.path.join("assets", "razzie_icon.jpg")
             icon_image = Image.open(icon_path)
@@ -55,13 +50,11 @@ class BingoGameApp:
         except Exception:
             pass
 
-        # Game State
         self.drawn_numbers = []
         self.current_draw = None
         self.game_over = False
         self.is_drawing = False
 
-        # --- 🎵 AUDIO SYSTEM ---
         self.snd_click = None
         self.snd_roll = None
         self.snd_draw = None
@@ -78,7 +71,6 @@ class BingoGameApp:
                 if os.path.exists(path): return pygame.mixer.Sound(path)
                 return None
 
-            # Load All Sounds
             self.snd_click = load_sound("mixkit_gameclick.wav")
             
             self.snd_roll = load_sound("rolling.mp3")
@@ -89,7 +81,6 @@ class BingoGameApp:
             self.snd_defeat = load_sound("BingLose.mp3")
             self.snd_notify = load_sound("mixkit_notifieraudio.wav")
             
-            # Background Music (Classic Only Check)
             if self.__class__.__name__ == "BingoGameApp":
                 bgm_path = os.path.join("assets", "jazzloop_classic.mp3")
                 if os.path.exists(bgm_path):
@@ -118,7 +109,6 @@ class BingoGameApp:
         sidebar = tk.Frame(self.root, bg=COLOR_PANEL, width=300, padx=20, pady=20, relief=tk.RAISED, bd=2)
         sidebar.pack(side="left", fill="y")
         
-        # Ball Display
         self.ball_canvas = tk.Canvas(sidebar, width=220, height=220, 
                                      bg=COLOR_PANEL, highlightthickness=0)
         self.ball_canvas.pack(pady=(10, 25))
@@ -130,31 +120,26 @@ class BingoGameApp:
         self.ball_text_letter = self.ball_canvas.create_text(110, 90, text="?", font=self.font_ball_main, fill=COLOR_BG)
         self.ball_text_num = self.ball_canvas.create_text(110, 160, text="ROLL", font=self.font_ball_sub, fill="#64748b")
 
-        # Draw Button
         self.btn_draw = tk.Button(sidebar, text="🎰 DRAW BALL", font=("Arial Black", 14),
                              bg=COLOR_DRAW_BTN, fg="white", 
                              activebackground="#b91c1c", activeforeground="white",
                              command=self.start_ball_animation, relief=tk.RAISED, bd=5, cursor="hand2")
         self.btn_draw.pack(fill="x", pady=15)
 
-        # Log
         tk.Label(sidebar, text="HISTORY LOG", bg=COLOR_PANEL, fg=COLOR_GOLD, font=("Verdana", 10, "bold")).pack(anchor="w")
         self.log_box = tk.Text(sidebar, height=12, width=30, font=self.font_log, 
                                bg="#0f172a", fg="#38bdf8", bd=2, relief=tk.SUNKEN, padx=5, pady=5)
         self.log_box.pack(fill="x", pady=5)
 
-        # Menu Btn
         self.btn_back = tk.Button(sidebar, text="🏠 MAIN MENU", font=("Arial", 10, "bold"),
                              bg="#475569", fg="white", command=self.confirm_return_to_menu, relief=tk.RAISED, bd=3)
         self.btn_back.pack(side="bottom", fill="x", pady=10)
 
-        # Board Area
         board_area = tk.Frame(self.root, bg=COLOR_BG)
         board_area.pack(side="right", expand=True, fill="both", padx=30, pady=20)
         board_area.columnconfigure(0, weight=1)
         board_area.columnconfigure(1, weight=1)
 
-        # P1 Frame
         self.human_frame = tk.Frame(board_area, bg=COLOR_BG)
         self.human_frame.grid(row=0, column=0)
         tk.Label(self.human_frame, text=f" {self.human.name} ", font=self.font_header,
@@ -162,7 +147,6 @@ class BingoGameApp:
         self.p1_grid = tk.Frame(self.human_frame, bg=CARD_BG_COLOR, bd=6, relief=tk.RIDGE)
         self.p1_grid.pack()
 
-        # P2 Frame
         self.cpu_frame = tk.Frame(board_area, bg=COLOR_BG)
         self.cpu_frame.grid(row=0, column=1)
         tk.Label(self.cpu_frame, text=f" {self.cpu.name} ", font=self.font_header,
@@ -289,7 +273,6 @@ class BingoGameApp:
             self.is_drawing = False
 
     def show_toast(self, message):
-        """Shows a small Casino Alert for errors instead of standard toast."""
         show_casino_alert(self.root, "PIT BOSS SAYS", message)
 
     def human_click(self, player_obj, btn_list, value, index):
@@ -366,16 +349,11 @@ class BingoGameApp:
             elif winner == self.human: msg = f"{self.human.name} WINS via BINGO!"
             else: msg = f"{self.cpu.name} WINS via BINGO!"
 
-        # Use the Casino Alert for Game Over
         show_casino_alert(self.root, "JACKPOT RESULT", msg)
         
-        # After acknowledging result, ask what to do
         self.ask_post_game_action()
 
     def ask_post_game_action(self):
-        # We simulate a "Play Again?" prompt using our custom dialog logic
-        # Since our notification.py is simple, we might just need to hardcode a choice logic here
-        # or expand notification.py. For now, let's use the standard "confirm" for "Play Again"
         play_again = ask_casino_confirm(self.root, "PLAY AGAIN?", "Do you want to play another round?")
         
         if play_again:
@@ -395,7 +373,6 @@ class BingoGameApp:
             self.return_to_main_menu()
             return
             
-        # --- NEW: Use Custom Casino Popup ---
         leave = ask_casino_confirm(self.root, "LEAVE THE TABLE?", "Forfeit current game and return to Main Menu?")
         if leave:
             self.return_to_main_menu()

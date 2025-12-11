@@ -1,10 +1,8 @@
-# game_pkg/bingo_bomb.py
 import tkinter as tk
 from tkinter import messagebox
 import random
 import pygame
 import os
-# --- NEW IMPORTS ---
 from .notifications import ask_risk_check, show_casino_alert
 from .game_ui import BingoGameApp, COLOR_BG, COLOR_GOLD, COLOR_RED
 
@@ -16,18 +14,15 @@ class BingoBombApp(BingoGameApp):
         self.p1_health = 2
         self.p2_health = 2
 
-        # --- 💣 BOMB MODE AUDIO ---
         self.snd_explode = None
         
         try:
-            # 1. Background Music
             bgm_path = os.path.join("assets", "uptown_jazzbomb.mp3")
             if os.path.exists(bgm_path):
                 pygame.mixer.music.load(bgm_path)
                 pygame.mixer.music.play(loops=-1)
                 pygame.mixer.music.set_volume(0.5)
             
-            # 2. Explosion Sound Effect
             explode_path = os.path.join("assets", "bomb_explode.mp3")
             if os.path.exists(explode_path):
                 self.snd_explode = pygame.mixer.Sound(explode_path)
@@ -70,40 +65,28 @@ class BingoBombApp(BingoGameApp):
         if value == self.current_draw:
             if self.snd_notify: self.snd_notify.play()
 
-            # --- NEW: CUSTOM RISK CHECK ---
-            # Instead of standard Yes/No, we use the specific Risk Popup
             risk_it = ask_risk_check(self.root)
             if not risk_it: 
                 self.show_toast("PLAYED IT SAFE!")
                 return
-
-            # Proceed if they risked it (call Parent logic logic to mark cell)
-            # NOTE: We can't call super().human_click easily because it duplicates logic.
-            # So we manually mark it here similar to parent class:
             
             player_obj.marked[index] = True
-            # Visual update handles in parent usually, but we need to do it here
             from .game_ui import P1_HIGHLIGHT, P2_HIGHLIGHT
             mark_color = P1_HIGHLIGHT if player_obj == self.human else P2_HIGHLIGHT
             btn_list[index].config(bg=mark_color, fg="black", state="disabled", relief=tk.SUNKEN)
             self.update_log(f"{player_obj.name} marked {value}!")
             self.check_winners()
 
-            # Now Check for Bomb
             current_mines = self.p1_mines if player_obj == self.human else self.p2_mines
             if index in current_mines:
                 self.take_damage(player_obj, btn_list[index])
         else:
-            # Wrong number click
             self.show_toast("WRONG NUMBER!")
 
     def cpu_turn(self, number):
         idx = self.cpu.check_match(number)
         
-        # Manually do parent logic to avoid super() issues with custom flow
         if idx != -1:
-            # CPU Logic: In a real game, CPU might "know" or randomly guess.
-            # Here we just assume CPU always takes the risk.
             from .game_ui import P2_HIGHLIGHT
             self.p2_btns[idx].config(bg=P2_HIGHLIGHT, fg="black", relief=tk.SUNKEN)
             self.update_log(f"CPU marked {number}")
@@ -129,7 +112,6 @@ class BingoBombApp(BingoGameApp):
         if self.snd_explode:
             self.snd_explode.play()
 
-        # --- NEW: CASINO ALERT FOR BOMB ---
         show_casino_alert(self.root, "EXPLOSION!", f"{player_obj.name} hit a BOMB! (-1 Heart)")
 
         if self.p1_health <= 0:
@@ -190,8 +172,5 @@ class BingoBombApp(BingoGameApp):
             if winner == self.human: msg = f"{self.cpu.name} exploded! YOU WIN!"
             else: msg = f"{self.human.name} exploded! {self.cpu.name} WINS!"
 
-        # --- NEW: CASINO ALERT FOR GAME OVER ---
         show_casino_alert(self.root, "SURVIVAL RESULT", msg)
-        
-        # After acknowledging, ask what to do next
         self.ask_post_game_action()
