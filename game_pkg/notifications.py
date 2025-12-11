@@ -72,7 +72,7 @@ def show_casino_alert(parent, title="PIT BOSS SAYS", message="Action Completed."
 def ask_risk_check(parent):
     msg = "A BOMB is hidden here!\n\nDo you want to RISK defusing it?\n(50% Chance to Clear, 50% Explosion)"
     dialog = CasinoPopup(parent, "⚠ HIGH STAKES ⚠", msg, 
-                         buttons=[("CUT WIRE", "#d97706", True), 
-                                  ("FOLD", "#64748b", False)],
+                         buttons=[("RISK IT", "#d97706", True), 
+                                  ("AVOID", "#64748b", False)],
                          width=500, height=300)
     return dialog.result
