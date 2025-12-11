@@ -22,8 +22,6 @@ This is a comprehensive OOP-based Python game featuring a GUI built with Tkinter
 
 ## 🏆 Applied OOP Concepts (Rubric Requirements)
 
-*Use this section as your script during the presentation to prove you met the requirements.*
-
 ### 1. Class and Object (15 pts)
 * **Requirement:** Correct and meaningful class design.
 * **Where to show it:**
