@@ -165,7 +165,7 @@ class BingoBombApp(BingoGameApp):
 
         msg = ""
         if reason == "Bingo" or reason == "Draw":
-            if winner is None: msg = "It's a DRAW!"
+            if winner is None: msg = "YOU WIN!"
             elif winner == self.human: msg = f"{self.human.name} WINS via BINGO!"
             else: msg = f"{self.cpu.name} WINS via BINGO!"
         elif reason == "Elimination":
